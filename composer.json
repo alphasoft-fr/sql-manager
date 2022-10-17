@@ -1,0 +1,36 @@
+{
+  "name": "alphasoft-fr/sql-manager",
+  "description": "PHP SQL Manager",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "F. Michel"
+    },
+    {
+      "name": "Alpha Soft",
+      "homepage": "https://alpha-soft.fr"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "AlphaSoft\\Sql\\": "src",
+      "Test\\AlphaSoft\\Sql\\": "tests"
+    }
+  },
+  "require": {
+    "php": ">=7.3",
+    "ext-pdo": "*",
+    "alphasoft-fr/data-model": "^1.0",
+    "doctrine/dbal": "^3.3"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.4",
+    "nunomaduro/phpinsights": "^1.14"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": false
+    }
+  }
+}
