@@ -6,7 +6,7 @@ use AlphaSoft\Sql\Driver\CustomDriver;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 
-final class DoctrineManager
+class DoctrineManager
 {
     /**
      * @var Connection
