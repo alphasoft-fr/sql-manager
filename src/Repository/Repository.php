@@ -12,13 +12,13 @@ use ReflectionClass;
 abstract class Repository
 {
     /**
-     * @var Connection
+     * @var DoctrineManager
      */
-    protected $connection;
+    protected $manager;
 
     public function __construct(DoctrineManager $manager)
     {
-        $this->connection = $manager->getConnection();
+        $this->manager = $manager;
     }
 
     abstract public function getTable(): string;
@@ -53,13 +53,14 @@ abstract class Repository
 
     public function insert(AbstractModel $model): int
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->manager->getConnection();
+        $query = $connection->createQueryBuilder();
         $query->insert($this->getTable());
         foreach ($model->toArray() as $property => $value) {
             $query->setValue($property, $query->createPositionalParameter($value));
         }
         $rows = $query->executeStatement();
-        $lastId = $this->connection->lastInsertId();
+        $lastId = $connection->lastInsertId();
         if ($lastId !== false) {
             $model->hydrate(['id' => $lastId] + $model->toArray());
         }
@@ -68,7 +69,7 @@ abstract class Repository
 
     public function update(AbstractModel $model, array $arguments = []): int
     {
-        $query = $this->connection->createQueryBuilder();
+        $query = $this->manager->getConnection()->createQueryBuilder();
         $query->update($this->getTable());
         foreach ($model->toArray() as $property => $value) {
             $query->set($property, $query->createPositionalParameter($value));
@@ -86,7 +87,7 @@ abstract class Repository
     protected function generateSelectQuery(array $arguments = [], array $orderBy = [], ?int $limit = null): QueryBuilder
     {
         $properties = $this->getProperties();
-        $query = $this->connection->createQueryBuilder();
+        $query = $this->manager->getConnection()->createQueryBuilder();
         $query
             ->select(...$properties)
             ->from($this->getTable());
