@@ -35,7 +35,7 @@ abstract class Repository
         if ($item === false) {
             return null;
         }
-        return self::toObject(ModelHelper::getReflection($this->getModelName()), $item);
+        return ModelHelper::toObject($this->getModelName(), $item);
     }
 
     public function findBy(array $arguments = [], array $orderBy = [], ?int $limit = null): array
@@ -43,7 +43,7 @@ abstract class Repository
         $query = $this->generateSelectQuery($arguments, $orderBy, $limit);
         $data = $query->fetchAllAssociative();
 
-        return $this->toCollectionObject($data);
+        return ModelHelper::toCollectionObject($this->getModelName(), $data);
     }
 
     public function insert(AbstractModel $model): int
@@ -103,26 +103,5 @@ abstract class Repository
             }
             $query->andWhere($property . ' = ' . $query->createPositionalParameter($value));
         }
-    }
-
-    protected function toCollectionObject(array $data): array
-    {
-        $collection = [];
-        $reflectionClass = ModelHelper::getReflection($this->getModelName());
-        foreach ($data as $item) {
-            $model = self::toObject($reflectionClass, $item);
-            $collection[] = $model;
-        }
-        return $collection;
-    }
-
-    protected static function toObject(ReflectionClass $reflectionClass, array $data): AbstractModel
-    {
-        /**
-         * @var AbstractModel $model
-         */
-        $model = $reflectionClass->newInstance();
-        $model->hydrate($data);
-        return $model;
     }
 }

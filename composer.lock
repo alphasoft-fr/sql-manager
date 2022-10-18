@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "alphasoft-fr/data-model",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alphasoft-fr/data-model.git",
-                "reference": "29e64f5d656f7fca39c3aa937eb15e0d248805f4"
+                "reference": "2d07938cedcf5342c7f0e8a6d28f6c475fe8a420"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alphasoft-fr/data-model/zipball/29e64f5d656f7fca39c3aa937eb15e0d248805f4",
-                "reference": "29e64f5d656f7fca39c3aa937eb15e0d248805f4",
+                "url": "https://api.github.com/repos/alphasoft-fr/data-model/zipball/2d07938cedcf5342c7f0e8a6d28f6c475fe8a420",
+                "reference": "2d07938cedcf5342c7f0e8a6d28f6c475fe8a420",
                 "shasum": ""
             },
             "require": {
@@ -50,9 +50,9 @@
             "description": "PHP Modeling data",
             "support": {
                 "issues": "https://github.com/alphasoft-fr/data-model/issues",
-                "source": "https://github.com/alphasoft-fr/data-model/tree/1.0.1"
+                "source": "https://github.com/alphasoft-fr/data-model/tree/1.0.2"
             },
-            "time": "2022-10-17T12:43:57+00:00"
+            "time": "2022-10-18T15:53:39+00:00"
         },
         {
             "name": "doctrine/cache",
