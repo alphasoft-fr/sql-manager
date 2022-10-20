@@ -15,6 +15,7 @@ class DoctrineManager
 
     public function __construct(
         string    $host,
+        string    $port,
         string    $dbs,
         string    $user,
         ?string   $password = null,
@@ -26,6 +27,7 @@ class DoctrineManager
             'user' => $user,
             'password' => $password,
             'host' => $host,
+            'port' => $port,
             'driverClass' => CustomDriver::class,
             'constructPdoDsn' => $constructPdoDsn ?: new ConstructPdoDsn('mysql'),
         ]);
