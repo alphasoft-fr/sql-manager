@@ -7,7 +7,6 @@ use AlphaSoft\DataModel\Helper\ModelHelper;
 use AlphaSoft\Sql\DoctrineManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
-use ReflectionClass;
 
 abstract class Repository
 {
@@ -22,7 +21,9 @@ abstract class Repository
     }
 
     abstract public function getTable(): string;
+
     abstract public function getModelName(): string;
+
     /**
      * @return array<string>
      */
@@ -64,12 +65,12 @@ abstract class Repository
 
     public function update(AbstractModel $model, array $arguments = []): int
     {
-        $query = $this->manager->getConnection()->createQueryBuilder();
+        $query = $this->createQueryBuilder();
         $query->update($this->getTable());
         foreach ($model->toArray() as $property => $value) {
             $query->set($property, $query->createPositionalParameter($value));
         }
-        $this->generateWhereQuery($query, $arguments);
+        self::generateWhereQuery($query, $arguments);
         return $query->executeStatement();
     }
 
@@ -82,11 +83,11 @@ abstract class Repository
     protected function generateSelectQuery(array $arguments = [], array $orderBy = [], ?int $limit = null): QueryBuilder
     {
         $properties = $this->getProperties();
-        $query = $this->manager->getConnection()->createQueryBuilder();
+        $query = $this->createQueryBuilder();
         $query
             ->select(...$properties)
             ->from($this->getTable());
-        $this->generateWhereQuery($query, $arguments);
+        self::generateWhereQuery($query, $arguments);
         foreach ($orderBy as $property => $order) {
             $query->orderBy($property, $order);
         }
@@ -94,7 +95,12 @@ abstract class Repository
         return $query;
     }
 
-    protected function generateWhereQuery(QueryBuilder $query, array $arguments = []): void
+    protected function createQueryBuilder(): QueryBuilder
+    {
+        return $this->manager->getConnection()->createQueryBuilder();
+    }
+
+    protected static function generateWhereQuery(QueryBuilder $query, array $arguments = []): void
     {
         foreach ($arguments as $property => $value) {
             if (is_array($value)) {
