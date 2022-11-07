@@ -95,7 +95,7 @@ abstract class Repository
         return $query;
     }
 
-    protected function createQueryBuilder(): QueryBuilder
+    public function createQueryBuilder(): QueryBuilder
     {
         return $this->manager->getConnection()->createQueryBuilder();
     }
