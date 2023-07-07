@@ -6,6 +6,7 @@ use AlphaSoft\DataModel\AbstractModel;
 use AlphaSoft\DataModel\Helper\ModelHelper;
 use AlphaSoft\Sql\DoctrineManager;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 
 abstract class Repository
@@ -53,7 +54,7 @@ abstract class Repository
         $query = $connection->createQueryBuilder();
         $query->insert($this->getTable());
         foreach ($model->toArray() as $property => $value) {
-            $query->setValue($property, $query->createPositionalParameter($value));
+            self::setValue($query, $property, $value);
         }
         $rows = $query->executeStatement();
         $lastId = $connection->lastInsertId();
@@ -68,7 +69,7 @@ abstract class Repository
         $query = $this->createQueryBuilder();
         $query->update($this->getTable());
         foreach ($model->toArray() as $property => $value) {
-            $query->set($property, $query->createPositionalParameter($value));
+            self::setValue($query, $property, $value);
         }
         self::generateWhereQuery($query, $arguments);
         return $query->executeStatement();
@@ -109,5 +110,18 @@ abstract class Repository
             }
             $query->andWhere($property . ' = ' . $query->createPositionalParameter($value));
         }
+    }
+
+    protected static function setValue(QueryBuilder $query, $property, $value): void
+    {
+        $type = ParameterType::STRING;
+        if (\is_bool($value)) {
+            $type = ParameterType::BOOLEAN;
+        } elseif (\is_int($value)) {
+            $type = ParameterType::INTEGER;
+        } elseif (\is_null($value)) {
+            $type = ParameterType::NULL;
+        }
+        $query->set($property, $query->createPositionalParameter($value, $type));
     }
 }
