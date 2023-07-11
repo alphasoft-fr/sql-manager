@@ -54,7 +54,7 @@ abstract class Repository
         $query = $connection->createQueryBuilder();
         $query->insert($this->getTable());
         foreach ($model->toArray() as $property => $value) {
-            self::setValue($query, $property, $value);
+            $query->setValue($property, $query->createPositionalParameter($value, self::typeOfValue($value)));
         }
         $rows = $query->executeStatement();
         $lastId = $connection->lastInsertId();
@@ -69,7 +69,7 @@ abstract class Repository
         $query = $this->createQueryBuilder();
         $query->update($this->getTable());
         foreach ($model->toArray() as $property => $value) {
-            self::setValue($query, $property, $value);
+            $query->set($property, $query->createPositionalParameter($value, self::typeOfValue($value)));
         }
         self::generateWhereQuery($query, $arguments);
         return $query->executeStatement();
@@ -112,7 +112,7 @@ abstract class Repository
         }
     }
 
-    protected static function setValue(QueryBuilder $query, $property, $value): void
+    protected static function typeOfValue($value): int
     {
         $type = ParameterType::STRING;
         if (\is_bool($value)) {
@@ -122,6 +122,6 @@ abstract class Repository
         } elseif (\is_null($value)) {
             $type = ParameterType::NULL;
         }
-        $query->set($property, $query->createPositionalParameter($value, $type));
+        return $type;
     }
 }
